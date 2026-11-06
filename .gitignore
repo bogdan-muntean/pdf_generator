@@ -30,3 +30,5 @@ Thumbs.db
 # Backups saved from the app (they contain personal data)
 backup/
 *.zip
+# ...except the example backup the owner chose to publish
+!example-pdf-generator-backup-*.zip
