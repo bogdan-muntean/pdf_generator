@@ -1,0 +1,97 @@
+/* Theme "classic": A4, Calibri (Carlito fallback), uppercase section titles with a thick bar. */
+
+@page {
+    size: A4;
+    margin: 0.9cm 1.1cm 1.6cm 1.1cm;
+
+    @bottom-right {
+        content: counter(page);
+        font-family: Calibri, Carlito;
+        font-size: 14pt;
+        vertical-align: top;
+        padding-top: 0.3cm;
+    }
+}
+
+body {
+    font-family: Calibri, Carlito;
+    font-size: 10pt;
+    line-height: 1.12;
+    color: #000;
+    margin: 0;
+    orphans: 2;
+    widows: 2;
+}
+
+a { color: inherit; text-decoration: none; }
+.bold { font-weight: bold; }
+.page-break { page-break-before: always; }
+.keep { page-break-inside: avoid; }
+
+/* ---- icon fonts (Font Awesome Free, ADR-0017) ---- */
+.fa-solid { font-family: "FA Solid"; }
+.fa-brands { font-family: "FA Brands"; }
+
+/* ---- header ---- */
+table.header { width: 100%; border-collapse: collapse; margin-bottom: 0.3cm; }
+td.photo-cell { width: 3.8cm; vertical-align: top; padding: 0; }
+img.photo { width: 3.7cm; height: 3.7cm; }
+td.name-cell { vertical-align: top; padding: 0.15cm 0 0 1.6cm; }
+.name { font-family: Arial, Carlito; font-weight: bold; font-size: 28pt; }
+.job-title { font-size: 13pt; margin-top: 0.4cm; padding-left: 3pt; }
+
+/* ---- sections ---- */
+.section { margin-top: 0.15cm; width: 100%; }
+h2.section-title {
+    font-size: 15pt;
+    font-weight: normal;
+    margin: 0 0 0.2cm 0;
+    padding: 0 0 1pt 0.25cm;
+    width: 66%;
+    border-bottom: 2.5pt solid #000;
+    page-break-after: avoid;
+}
+
+/* ---- contact ---- */
+table.contact-grid { width: 100%; border-collapse: collapse; }
+td.contact-col { width: 36%; vertical-align: top; padding: 0; }
+td.contact-col.right { width: 46%; }
+td.qr-cell { width: 18%; vertical-align: top; text-align: right; padding: 0.1cm 0 0 0; }
+img.qr { width: 2.5cm; height: 2.5cm; }
+table.contact-list { border-collapse: collapse; }
+table.contact-list td { padding: 3pt 0; vertical-align: middle; font-size: 10pt; }
+td.icon-cell { width: 1cm; padding-left: 0.6cm; text-align: center; }
+.icon { font-size: 13pt; }
+.badge {
+    display: inline-block;
+    width: 14pt;
+    height: 14pt;
+    line-height: 14pt;
+    border-radius: 7pt;
+    font-size: 7.5pt;
+    text-align: center;
+    color: #fff;
+}
+.badge.dark { background-color: #000; }
+.badge.linkedin { background-color: #2f80c9; }
+.qr-caption { font-size: 10.5pt; margin: 6pt 0 0 0.2cm; text-align: justify; }
+
+/* ---- text ---- */
+p.paragraph { font-size: 12pt; margin: 0 0 0.15cm 0; text-indent: 1.2cm; text-align: justify; }
+
+/* ---- entries (paginated table: title repeats on each page) ---- */
+table.entries { border-collapse: collapse; -fs-table-paginate: paginate; }
+table.entries td { padding: 0; }
+tr.entry-head td { padding-top: 0.2cm; }
+tr.entry-head, tr.entry-bullet { page-break-inside: avoid; }
+.entry-heading { font-weight: bold; font-size: 13pt; }
+.entry-dates { font-size: 11pt; }
+.bullets { margin-top: 0.3cm; }
+/* The dot stays in the normal flow (no absolute/float) so extracted text keeps reading order (ATS). */
+.bullet, .list-item { padding-left: 0.9cm; }
+.bullet { font-size: 9.5pt; text-align: justify; }
+.list-item { font-size: 11pt; }
+.dot { display: inline-block; width: 0.6cm; margin-left: -0.6cm; }
+
+/* ---- categories ---- */
+p.category { font-size: 11pt; margin: 0; }

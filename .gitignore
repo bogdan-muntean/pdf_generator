@@ -1,0 +1,28 @@
+# Build
+target/
+frontend/node/
+frontend/node_modules/
+frontend/*.tsbuildinfo
+# Installed copy run by the desktop shortcut (create-shortcut.ps1), and the shortcut it puts in this folder
+app/
+/PDF Generator.lnk
+
+# Generated PDFs
+output/
+
+# Runtime: single-instance lock/port file and log files (ADR-0021)
+run/
+logs/
+
+# Owner's real personal documents (ADR-0010) - version them in their own private repo if desired
+data/
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+Thumbs.db
+.DS_Store
+
+# Local Claude settings
+.claude/settings.local.json

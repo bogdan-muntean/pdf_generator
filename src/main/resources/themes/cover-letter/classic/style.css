@@ -1,0 +1,32 @@
+/* Theme "classic" for cover letters (ADR-0026): A4, Times New Roman 12pt (Liberation Serif fallback), black,
+   left-aligned, bold sender name / salutation / closing / signature, bold underlined dark-blue links. */
+
+@page {
+    size: A4;
+    margin: 2.2cm 2cm 2cm 2cm;
+}
+
+body {
+    font-family: "Times New Roman", "Liberation Serif";
+    font-size: 12pt;
+    line-height: 1.32;
+    color: #000;
+    margin: 0;
+    orphans: 2;
+    widows: 2;
+}
+
+p { margin: 0 0 6pt 0; }
+.bold { font-weight: bold; }
+
+.sender-name { font-weight: bold; margin: 0; }
+.sender { margin-bottom: 9pt; }
+a.link { color: #1a2f8a; font-weight: bold; text-decoration: underline; }
+.sep { font-weight: bold; }
+
+.date { margin-bottom: 9pt; }
+.recipient { margin-bottom: 9pt; }
+
+.subject, .salutation, .closing, .signature { font-weight: bold; }
+.salutation { margin-bottom: 6pt; }
+.closing { margin-top: 9pt; margin-bottom: 9pt; }

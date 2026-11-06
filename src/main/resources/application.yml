@@ -1,0 +1,34 @@
+pdfgen:
+  # Folder with your documents (*.yaml) and assets (photo). Relative to the working directory.
+  data-dir: data
+  # Where `render` writes PDFs.
+  output-dir: output
+  # Calibri/Arial are loaded from here when present; Carlito (bundled) is the fallback.
+  system-font-dir: C:/Windows/Fonts
+  # Viewer port: used when free, otherwise the OS picks a free port (ADR-0021). The browser opens the right URL.
+  preferred-port: 8080
+  desktop:
+    # Set to true by the `serve` launcher; off for tests and plain Spring runs.
+    open-browser: false
+    tray: false
+    exit-jvm: true
+
+server:
+  # Local only: never reachable from the network (CLAUDE.md, principle 11).
+  address: 127.0.0.1
+  # On Quit: stop accepting requests, finish the running ones, close the port, then stop the app.
+  shutdown: graceful
+
+logging:
+  level:
+    com.openhtmltopdf: WARN
+    # "Format 14 cmap table is not supported" from Calibri/Carlito: harmless
+    org.apache.fontbox.ttf: ERROR
+
+spring:
+  application:
+    name: pdf-generator
+  main:
+    banner-mode: off
+  lifecycle:
+    timeout-per-shutdown-phase: 5s

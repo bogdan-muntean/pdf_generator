@@ -1,0 +1,57 @@
+# Fictional sample cover letter (ADR-0026), used by tests and as a template for your own letters.
+# Reference: docs/DATA_FORMAT.md. Keep placeholders such as [Company Name] in the base and fill them in a
+# variant per company (see cover-letter-sample-initech.yaml).
+meta:
+  type: cover-letter
+  lang: en
+  theme: classic
+  outputName: Alex_Popescu_cover_letter
+
+person:
+  name: Alex Popescu
+
+letter:
+  salutation: Dear Hiring Manager,
+  closing: Sincerely,
+
+sections:
+  - id: contact
+    kind: contact
+    title: Sender
+    items:
+      - { id: location, type: location, value: "Cluj-Napoca, Romania" }
+      - { id: email, type: email, value: alex.popescu@example.com, bold: true }
+      - { id: phone, type: phone, value: "+40 700 000 000", bold: true }
+      - { id: github, type: github, label: GitHub, value: /alex-popescu, href: "https://github.com/alex-popescu" }
+      - { id: linkedin, type: linkedin, label: LinkedIn, value: /alex-popescu, href: "https://www.linkedin.com/in/alex-popescu" }
+      - { id: website, type: website, label: My Website, value: "https://alex-popescu.example.com/" }
+
+  - id: recipient
+    kind: lines
+    title: Recipient
+    items:
+      - { id: company, text: "[Company Name]" }
+      - { id: address, text: "[Company Address]" }
+      - { id: city, text: "[City]" }
+
+  - id: body
+    kind: text
+    title: Letter
+    items:
+      - id: intro
+        text: >-
+          My name is Alex Popescu, and I am writing to express my strong interest in the Software Developer
+          position within your company. I bring over three years of professional experience in web applications,
+          API integrations and automation.
+      - id: current-role
+        text: >-
+          In my current role as a Backend Developer at Acme Software, I design and maintain REST APIs used by three
+          internal products, and I optimized PostgreSQL queries, reducing report generation time by 40%.
+      - id: previous-role
+        text: >-
+          Before that, I spent two years at Globex, where I wrote end-to-end tests with Playwright for the critical
+          checkout flows and helped the team release with confidence.
+      - id: closing-paragraph
+        text: >-
+          Thank you for your time and consideration. I look forward to the possibility of discussing how my
+          background can support your team's goals.

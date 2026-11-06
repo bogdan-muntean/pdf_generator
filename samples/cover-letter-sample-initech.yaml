@@ -1,0 +1,27 @@
+# Fictional variant: the sample letter for one company. Only the differences are written here.
+extends: cover-letter-sample
+
+meta:
+  outputName: Alex_Popescu_cover_letter_Initech
+
+operations:
+  - set:
+      target: letter
+      fields: { subject: "Application for the Java Developer position", date: "6 November 2026" }
+
+  - set:
+      target: recipient/company
+      fields: { text: Initech Romania }
+  - set:
+      target: recipient/address
+      fields: { text: "21 Example Street" }
+  - set:
+      target: recipient/city
+      fields: { text: Cluj-Napoca }
+
+  - set:
+      target: body/intro
+      fields:
+        text: >-
+          My name is Alex Popescu, and I am writing to apply for the Java Developer position at Initech Romania.
+          I bring over three years of professional experience with Java, Spring Boot and PostgreSQL.

@@ -1,0 +1,43 @@
+# Fictional variant: the same CV tailored for a QA role.
+# Only the differences are written here; everything else comes from cv-sample.yaml.
+extends: cv-sample
+
+meta:
+  outputName: CV_Alex_Popescu_QA
+
+operations:
+  # 1. Different job title in the header
+  - set:
+      target: person
+      fields: { jobTitle: QA AUTOMATION ENGINEER }
+
+  # 2. Rename a section
+  - set:
+      target: experience
+      fields: { title: PROFESSIONAL EXPERIENCE }
+
+  # 3. Reword one bullet (it has an id in the base)
+  - set:
+      target: experience/acme/acme-api
+      fields: { text: "Designed API test suites (REST Assured, JUnit 5) for three internal products;" }
+
+  # 4. Remove a bullet and a whole item
+  - remove: { target: experience/acme/acme-ci }
+  - remove: { target: projects/portfolio }
+
+  # 5. Add a new bullet right after an existing one
+  - add:
+      into: experience/globex
+      after: globex-qa
+      bullet: Owned the regression test plan and release sign-off for the checkout team;
+
+  # 6. Add a new category
+  - add:
+      into: skills
+      before: backend
+      item: { id: testing, label: Testing, values: [JUnit 5, Playwright, REST Assured, Postman] }
+
+  # 7. Reorder sections: skills right after the summary
+  - order:
+      target: sections
+      ids: [contact, summary, skills, experience, projects, education]

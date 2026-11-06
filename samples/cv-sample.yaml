@@ -1,0 +1,135 @@
+# Fictional sample CV, used by tests and as a template for your own documents.
+# Reference: docs/DATA_FORMAT.md
+meta:
+  type: cv
+  lang: en
+  theme: classic
+  outputName: CV_Alex_Popescu
+
+person:
+  name: Alex Popescu
+  jobTitle: SOFTWARE DEVELOPER
+  photo: assets/photo.png
+
+sections:
+  - id: contact
+    kind: contact
+    title: CONTACT INFO
+    items:
+      - { id: location, type: location, value: "Cluj-Napoca, Romania", bold: true }
+      - { id: phone, type: phone, value: "+40700000000", bold: true }
+      - { id: github, type: github, value: /alex-popescu, href: "https://github.com/alex-popescu" }
+      - { id: linkedin, type: linkedin, value: /alex-popescu, href: "https://www.linkedin.com/in/alex-popescu" }
+      - { id: email, type: email, label: "Email:", value: alex.popescu@example.com, bold: true, column: right }
+      - { id: website, type: website, label: "My Website:", value: "https://alex-popescu.example.com/", bold: true, column: right }
+    qr:
+      url: https://alex-popescu.example.com/
+      caption: "Visit my website by scanning the QR code, or use the link {url}"
+
+  - id: summary
+    kind: text
+    title: EXECUTIVE SUMMARY
+    items:
+      - >-
+        Software Developer with 3+ years of experience in web applications, API integrations and
+        automation. Experienced with Java, Spring Boot, TypeScript and PostgreSQL. Seeking
+        backend opportunities in collaborative environments.
+
+  - id: experience
+    kind: entries
+    title: WORK EXPERIENCE
+    items:
+      - id: acme
+        heading: Acme Software – Backend Developer
+        dates: Jan 2024 – Present
+        bullets:
+          - { id: acme-api, text: "Designed and maintained REST APIs used by three internal products;" }
+          - { id: acme-db, text: "Optimized PostgreSQL queries, reducing report generation time by 40%;" }
+          - Introduced contract tests between services, catching breaking changes before release;
+          - Mentored two junior developers through code reviews and pair programming;
+          - { id: acme-ci, text: "Maintained the CI pipeline (GitLab CI, Docker) and release automation." }
+      - id: globex
+        heading: Globex Corporation — Full-stack Developer
+        dates: Mar 2022 – Dec 2023
+        bullets:
+          - Built internal dashboards with React and TypeScript on top of a Spring Boot backend;
+          - Integrated third-party payment and shipping APIs;
+          - { id: globex-qa, text: "Wrote end-to-end tests with Playwright for the critical checkout flows;" }
+          - Migrated legacy jQuery pages to React components incrementally;
+          - Participated in on-call rotation and incident post-mortems;
+          - Documented architecture decisions and onboarding guides.
+      - id: initech
+        heading: Initech – Software Engineering Intern
+        dates: Jul 2021 – Sep 2021
+        bullets:
+          - Automated data extraction and reporting tasks with Python scripts;
+          - Wrote unit tests for a legacy billing module, raising coverage from 20% to 65%;
+          - Assisted the QA team with regression testing before releases.
+
+  - id: skills
+    kind: categories
+    title: CORE TECHNOLOGIES
+    items:
+      - { id: backend, label: Back-end, values: [Java, Spring Boot, Node.js, REST APIs] }
+      - { id: frontend, label: Front-end, values: [HTML5, CSS3, TypeScript, React] }
+      - { id: databases, label: Databases, values: [PostgreSQL, MySQL, Redis] }
+      - { id: tools, label: DevOps & Tools, values: [Git, Docker, GitLab CI, Linux] }
+
+  - id: projects
+    kind: entries
+    title: PROJECTS
+    items:
+      - id: budget
+        heading: Budget Tracker – Personal Finance Application
+        bullets:
+          - Designed a hexagonal backend with Spring Boot and PostgreSQL as sole developer;
+          - Implemented authentication, budgets, recurring transactions and alerts;
+          - Delivered a responsive React front-end with charts for spending trends;
+          - Containerized the stack with Docker Compose for one-command local setup.
+      - id: portfolio
+        heading: Stock Portfolio Analytics Tool
+        bullets:
+          - Built an import pipeline with dry-run preview, validation and reconciliation;
+          - Integrated market data for automated valuation and return calculations;
+          - Generated PDF and Excel reports for long-term investment decisions.
+
+  - id: education
+    kind: entries
+    title: EDUCATION
+    items:
+      - id: master
+        heading: Master's Degree in Software Engineering
+        subheading: Technical University of Cluj-Napoca
+        dates: Oct 2021 – Jul 2023
+        bullets:
+          - Distributed systems, databases, software architecture and design patterns;
+          - Thesis on event-driven architectures for financial applications.
+      - id: bachelor
+        heading: Bachelor's Degree in Computer Science
+        subheading: Babeș-Bolyai University
+        dates: Oct 2018 – Jul 2021
+        bullets:
+          - Algorithms, operating systems, networking and object-oriented programming.
+
+  - id: soft-skills
+    kind: list
+    title: SOFT SKILLS
+    items:
+      - Adaptability;
+      - { id: teamwork, text: Team collaboration; }
+      - Attention to detail.
+
+  - id: languages
+    kind: list
+    title: LANGUAGE
+    items:
+      - Romanian – Native;
+      - English – C1 (Advanced);
+      - German – A2 (Elementary).
+
+  - id: interests
+    kind: list
+    title: INTERESTS
+    items:
+      - Software architecture;
+      - Hiking and basketball.

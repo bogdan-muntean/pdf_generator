@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+  Theme "classic" for cover letters (ADR-0026): reproduces the owner's original letter.
+  Variables: doc (Document), t (ThemeHelper), css (style.css).
+  Order: name, then the sections in their order (contact = sender lines, lines = recipient, text = body
+  paragraphs). The date goes before the first 'lines' section, subject and salutation before the first 'text'
+  section, closing and signature at the end. Section titles are editor labels and are not printed.
+  Every text uses th:text (escaped); everything stays in normal flow (ADR-0020).
+-->
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${doc.meta().lang()}"
+      th:with="letter=${t.letter(doc)}, firstLines=${t.firstIndexOfKind(doc, 'lines')}, firstText=${t.firstIndexOfKind(doc, 'text')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${doc.person().name()}">Name</title>
+    <meta name="author" th:content="${doc.person().name()}"/>
+    <style th:utext="${css}"></style>
+</head>
+<body>
+
+<p class="sender-name" th:text="${doc.person().name()}">Name</p>
+
+<th:block th:each="section, stat : ${doc.sections()}">
+
+    <p class="date" th:if="${stat.index == firstLines and t.opt(letter.date()) != null}"
+       th:text="${t.opt(letter.date())}">Date</p>
+    <th:block th:if="${stat.index == firstText}">
+        <p class="subject" th:if="${t.opt(letter.subject()) != null}" th:text="${t.opt(letter.subject())}">Subject</p>
+        <p class="salutation" th:text="${letter.salutation()}">Dear ...,</p>
+    </th:block>
+
+    <th:block th:switch="${section.kind()}">
+        <div th:case="'contact'" class="sender">
+            <div class="sender-line" th:each="line : ${t.contactLines(section.content(), 'location|email,phone|github,linkedin,website,other')}"><th:block
+                 th:each="item, itemStat : ${line}"><span class="sep" th:unless="${itemStat.first}"> | </span><a
+                 th:if="${t.isLetterLink(item)}" class="link" th:href="${t.letterHref(item)}"
+                 th:text="${t.letterText(item)}">link</a><span th:unless="${t.isLetterLink(item)}"
+                 th:classappend="${item.emphasized()} ? 'bold'" th:text="${t.letterText(item)}">text</span></th:block></div>
+        </div>
+
+        <div th:case="'lines'" class="recipient">
+            <div class="recipient-line" th:each="line, lineStat : ${section.content().lines()}"
+                 th:classappend="${lineStat.first} ? 'bold'" th:text="${line.text()}">line</div>
+        </div>
+
+        <th:block th:case="'text'">
+            <p class="paragraph" th:each="p : ${section.content().paragraphs()}" th:text="${p.text()}">text</p>
+        </th:block>
+    </th:block>
+</th:block>
+
+<th:block th:if="${firstText lt 0}">
+    <p class="subject" th:if="${t.opt(letter.subject()) != null}" th:text="${t.opt(letter.subject())}">Subject</p>
+    <p class="salutation" th:text="${letter.salutation()}">Dear ...,</p>
+</th:block>
+<p class="closing" th:text="${letter.closing()}">Sincerely,</p>
+<p class="signature" th:text="${doc.signature()}">Name</p>
+
+</body>
+</html>

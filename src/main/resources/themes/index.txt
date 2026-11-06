@@ -1,0 +1,5 @@
+# Available themes, one <document type>/<theme name> per line (ADR-0027).
+# Each one is a folder with document.html + style.css. ThemeCatalogTest checks this list against the folders.
+cv/classic
+cover-letter/classic
+cover-letter/modern

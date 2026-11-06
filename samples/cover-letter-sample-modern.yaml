@@ -1,0 +1,7 @@
+# Fictional variant (ADR-0027): the same letter as cover-letter-sample-initech, in the "modern" theme.
+# A theme is presentation only, so switching it is one meta field.
+extends: cover-letter-sample-initech
+
+meta:
+  theme: modern
+  outputName: Alex_Popescu_cover_letter_Initech_modern

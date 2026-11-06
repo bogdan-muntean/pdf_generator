@@ -1,0 +1,41 @@
+/* Theme "modern" for cover letters (ADR-0027): A4, Arial (Liberation Sans fallback) 10.5pt dark grey,
+   centered header with the name in dark-blue capitals, blue underlined links, a dark-blue rule. */
+
+@page {
+    size: A4;
+    margin: 1.6cm 1.8cm 1.8cm 1.8cm;
+}
+
+body {
+    font-family: Arial, "Liberation Sans";
+    font-size: 10pt;
+    line-height: 1.22;
+    color: #262626;
+    margin: 0;
+    orphans: 2;
+    widows: 2;
+}
+
+p { margin: 0 0 8pt 0; }
+
+.header {
+    text-align: center;
+    border-bottom: 1.5pt solid #1f4e79;
+    padding-bottom: 10pt;
+    margin-bottom: 10pt;
+}
+.sender-name { font-size: 20pt; font-weight: bold; color: #1f4e79; margin: 0 0 4pt 0; line-height: 1.1;
+    text-transform: uppercase; }
+.sender-line { font-size: 9pt; line-height: 1.45; }
+.sender-line + .sender-line { font-size: 10pt; }
+.sep { white-space: pre; }
+a.link { color: #1155cc; text-decoration: underline; }
+a.plain { color: inherit; text-decoration: none; }
+
+.date { margin-bottom: 8pt; }
+.recipient { margin-bottom: 9pt; }
+.recipient-line.first { font-weight: bold; font-size: 11pt; color: #1f4e79; }
+
+.subject { font-weight: bold; }
+.sign-off { margin-top: 2pt; }
+.signature { font-weight: bold; }

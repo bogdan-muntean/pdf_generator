@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+  Theme "classic" for CVs: reproduces the owner's original CV layout.
+  Variables: doc (Document), t (ThemeHelper), css (style.css), photo (data URI or null),
+             qrCodes (section id -> QR data URI).
+  Every text uses th:text (escaped). Layout uses tables/floats only (OpenHTMLtoPDF = CSS 2.1, ADR-0002).
+-->
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${doc.meta().lang()}">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${doc.person().name()}">Name</title>
+    <meta name="author" th:content="${doc.person().name()}"/>
+    <style th:utext="${css}"></style>
+</head>
+<body>
+
+<table class="header">
+    <tr>
+        <td class="photo-cell" th:if="${photo}"><img class="photo" th:src="${photo}" alt=""/></td>
+        <td class="name-cell">
+            <div class="name" th:text="${doc.person().name()}">Name</div>
+            <div class="job-title" th:if="${t.opt(doc.person().jobTitle())}"
+                 th:text="${t.opt(doc.person().jobTitle())}">JOB TITLE</div>
+        </td>
+    </tr>
+</table>
+
+<th:block th:each="section : ${doc.sections()}">
+<th:block th:switch="${section.kind()}">
+
+    <!-- contact: two columns of icon + value, optional QR code on the right -->
+    <div th:case="'contact'" class="section keep" th:classappend="${section.pageBreakBefore()} ? 'page-break'"
+         th:with="c=${section.content()}, qr=${t.qr(section.content())}">
+        <h2 class="section-title" th:text="${section.title()}">CONTACT</h2>
+        <table class="contact-grid">
+            <tr>
+                <td class="contact-col">
+                    <table class="contact-list">
+                        <tr th:each="item : ${t.leftColumn(c)}" th:with="icon=${t.icon(item.type())}">
+                            <td class="icon-cell"><span th:class="'icon ' + ${icon.fontClass()} + ' ' + ${icon.badgeClass()}"
+                                                        th:text="${icon.glyph()}"></span></td>
+                            <td class="contact-value" th:classappend="${item.emphasized()} ? 'bold'">
+                                <span th:if="${t.opt(item.label())}" th:text="${t.opt(item.label())} + ' '"></span><a
+                                    th:href="${t.href(item)}" th:text="${item.value()}">value</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="contact-col right">
+                    <table class="contact-list">
+                        <tr th:each="item : ${t.rightColumn(c)}" th:with="icon=${t.icon(item.type())}">
+                            <td class="icon-cell"><span th:class="'icon ' + ${icon.fontClass()} + ' ' + ${icon.badgeClass()}"
+                                                        th:text="${icon.glyph()}"></span></td>
+                            <td class="contact-value" th:classappend="${item.emphasized()} ? 'bold'">
+                                <span th:if="${t.opt(item.label())}" th:text="${t.opt(item.label())} + ' '"></span><a
+                                    th:href="${t.href(item)}" th:text="${item.value()}">value</a>
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="qr-caption" th:if="${qr != null and t.opt(qr.caption()) != null}">
+                        <span th:text="${t.captionBefore(qr)}"></span><a class="bold" th:if="${t.captionHasUrl(qr)}"
+                            th:href="${qr.url()}" th:text="${qr.url()}"></a><span
+                            th:if="${t.captionHasUrl(qr)}" th:text="${t.captionAfter(qr)}"></span>
+                    </p>
+                </td>
+                <td class="qr-cell" th:if="${qr}">
+                    <img class="qr" th:src="${qrCodes.get(section.id())}" alt=""/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- text: justified paragraphs -->
+    <div th:case="'text'" class="section keep" th:classappend="${section.pageBreakBefore()} ? 'page-break'">
+        <h2 class="section-title" th:text="${section.title()}">SUMMARY</h2>
+        <p class="paragraph" th:each="p : ${section.content().paragraphs()}" th:text="${p.text()}">text</p>
+    </div>
+
+    <!-- entries: a paginated table so the title repeats on every page the section spans (ADR-0018) -->
+    <table th:case="'entries'" class="section entries" th:classappend="${section.pageBreakBefore()} ? 'page-break'">
+        <thead>
+        <tr><td><h2 class="section-title" th:text="${section.title()}">EXPERIENCE</h2></td></tr>
+        </thead>
+        <tbody>
+        <th:block th:each="entry : ${section.content().entries()}">
+            <tr class="entry-head">
+                <td>
+                    <div class="entry-heading" th:text="${entry.heading()}">Company – Role</div>
+                    <div class="entry-heading" th:if="${t.opt(entry.subheading())}"
+                         th:text="${t.opt(entry.subheading())}">Institution</div>
+                    <div class="entry-dates" th:if="${t.opt(entry.dates())}" th:text="${t.opt(entry.dates())}">dates</div>
+                    <div class="bullets">
+                        <div class="bullet" th:each="b : ${t.leadBullets(entry)}"><span class="dot">•</span><span
+                                th:text="${b.text()}">bullet</span></div>
+                    </div>
+                </td>
+            </tr>
+            <tr class="entry-bullet" th:each="b : ${t.remainingBullets(entry)}">
+                <td><div class="bullet"><span class="dot">•</span><span th:text="${b.text()}">bullet</span></div></td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+
+    <!-- categories: "Label: value; value." -->
+    <div th:case="'categories'" class="section keep" th:classappend="${section.pageBreakBefore()} ? 'page-break'">
+        <h2 class="section-title" th:text="${section.title()}">SKILLS</h2>
+        <p class="category" th:each="cat : ${section.content().categories()}"><span class="bold"
+                th:text="${cat.label()} + ':'">Label:</span> <span th:text="${t.values(cat)}">values</span></p>
+    </div>
+
+    <!-- list: simple bullets -->
+    <div th:case="'list'" class="section keep" th:classappend="${section.pageBreakBefore()} ? 'page-break'">
+        <h2 class="section-title" th:text="${section.title()}">LIST</h2>
+        <div class="list-item" th:each="item : ${section.content().items()}"><span class="dot">•</span><span
+                th:text="${item.text()}">item</span></div>
+    </div>
+
+</th:block>
+</th:block>
+</body>
+</html>

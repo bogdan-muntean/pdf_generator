@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+  Theme "modern" for cover letters (ADR-0027): centered header (name in capitals, compact contact line, links),
+  a rule, then recipient (first line bold, coloured), salutation, paragraphs, closing and the signature below it.
+  Same data as "classic" (ADR-0026): contact = sender, lines = recipient, text = body paragraphs.
+  The date goes before the first 'lines' section, subject and salutation before the first 'text' section.
+  Every text uses th:text (escaped); everything stays in normal flow (ADR-0020).
+-->
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${doc.meta().lang()}"
+      th:with="letter=${t.letter(doc)}, firstLines=${t.firstIndexOfKind(doc, 'lines')}, firstText=${t.firstIndexOfKind(doc, 'text')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${doc.person().name()}">Name</title>
+    <meta name="author" th:content="${doc.person().name()}"/>
+    <style th:utext="${css}"></style>
+</head>
+<body>
+
+<div class="header">
+    <p class="sender-name" th:text="${doc.person().name()}">Name</p>
+    <th:block th:each="section : ${doc.sections()}" th:if="${section.kind() == 'contact'}">
+        <div class="sender-line" th:each="line : ${t.contactLines(section.content(), 'location,email,phone|github,linkedin,website,other')}"><th:block
+             th:each="item, itemStat : ${line}"><span class="sep" th:unless="${itemStat.first}">  |  </span><a
+             th:if="${t.isProfileLink(item)}" class="link" th:href="${t.letterHref(item)}"
+             th:text="${t.letterText(item)}">link</a><a th:if="${!t.isProfileLink(item) and t.letterHref(item) != null}"
+             class="plain" th:href="${t.letterHref(item)}" th:text="${t.letterText(item)}">email</a><span
+             th:if="${!t.isProfileLink(item) and t.letterHref(item) == null}" th:text="${t.letterText(item)}">text</span></th:block></div>
+    </th:block>
+</div>
+
+<th:block th:each="section, stat : ${doc.sections()}">
+
+    <p class="date" th:if="${stat.index == firstLines and t.opt(letter.date()) != null}"
+       th:text="${t.opt(letter.date())}">Date</p>
+    <th:block th:if="${stat.index == firstText}">
+        <p class="subject" th:if="${t.opt(letter.subject()) != null}" th:text="${t.opt(letter.subject())}">Subject</p>
+        <p class="salutation" th:text="${letter.salutation()}">Dear ...,</p>
+    </th:block>
+
+    <th:block th:switch="${section.kind()}">
+        <div th:case="'lines'" class="recipient">
+            <div class="recipient-line" th:each="line, lineStat : ${section.content().lines()}"
+                 th:classappend="${lineStat.first} ? 'first'" th:text="${line.text()}">line</div>
+        </div>
+
+        <th:block th:case="'text'">
+            <p class="paragraph" th:each="p : ${section.content().paragraphs()}" th:text="${p.text()}">text</p>
+        </th:block>
+    </th:block>
+</th:block>
+
+<th:block th:if="${firstText lt 0}">
+    <p class="subject" th:if="${t.opt(letter.subject()) != null}" th:text="${t.opt(letter.subject())}">Subject</p>
+    <p class="salutation" th:text="${letter.salutation()}">Dear ...,</p>
+</th:block>
+<div class="sign-off">
+    <div class="closing" th:text="${letter.closing()}">Sincerely,</div>
+    <div class="signature" th:text="${doc.signature()}">Name</div>
+</div>
+
+</body>
+</html>

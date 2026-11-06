@@ -1,0 +1,23 @@
+# Fictional third level (ADR-0025): the QA CV tailored for one company.
+# cv-sample -> cv-sample-qa -> cv-sample-qa-acme. Only the differences from cv-sample-qa are written here;
+# everything else (including the QA changes and anything later fixed in cv-sample) is inherited.
+extends: cv-sample-qa
+
+meta:
+  outputName: CV_Alex_Popescu_QA_Acme
+
+operations:
+  # Overrides a value the parent (cv-sample-qa) already changed
+  - set:
+      target: person
+      fields: { jobTitle: QA ENGINEER FOR ACME PAYMENTS }
+
+  # Changes something the parent did not touch: it still comes from cv-sample until now
+  - set:
+      target: summary
+      fields: { title: WHY ACME }
+
+  # Refers to an element added by the parent (testing was added by cv-sample-qa)
+  - set:
+      target: skills/testing
+      fields: { label: Testing at Acme }

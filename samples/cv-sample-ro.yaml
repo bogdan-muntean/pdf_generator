@@ -1,0 +1,24 @@
+# Fictional Romanian CV: a separate base document with the same ids (ADR-0009).
+meta:
+  type: cv
+  lang: ro
+  outputName: CV_Alex_Popescu_RO
+
+person:
+  name: Alex Popescu
+  jobTitle: DEZVOLTATOR SOFTWARE
+
+sections:
+  - id: summary
+    kind: text
+    title: REZUMAT PROFESIONAL
+    items:
+      - Dezvoltator cu experiență în aplicații web, integrări API și automatizări.
+
+  - id: interests
+    kind: list
+    title: INTERESE
+    items:
+      - Arhitectură software;
+      - Drumeții în Munții Făgăraș și baschet;
+      - "Diacritice: ă â î ș ț Ă Â Î Ș Ț."
