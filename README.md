@@ -5,14 +5,35 @@ Local generator for career documents: **CVs and cover letters**. Keep **one base
 have variants of its own (for example `cv-en` → `cv-en-fullstack` → `cv-en-fullstack-luxoft`).
 It runs only on your machine and makes no network calls.
 
+## Install on a new computer
+
+You need only Windows 10/11 and an internet connection the first time. Git, Maven and Node are not needed.
+
+1. On GitHub: **Code → Download ZIP**. Unzip it into a normal folder (for example `Documents\pdf_generator`; not a
+   OneDrive/synced folder). If Windows asks about a file downloaded from the internet, choose *Run* (or right-click the
+   ZIP → *Properties* → *Unblock* before unzipping).
+2. Double-click **`Install PDF Generator.bat`**.
+   - If Java 21 is missing, it offers to install it: type `y` and press Enter.
+   - It then builds the app; the first time this takes a few minutes and downloads Maven, Node and the libraries.
+   - At the end it says *Done* and waits for a key. If something fails, it says what, plus the log file
+     (`logs\install-….log`).
+3. Start the app from the **PDF Generator** shortcut on the Desktop or in the folder.
+
+**Update:** first make a *Backup…* in the app (or copy the `data\` folder). Then download the new ZIP, unzip it over
+the old folder or into a new one (copy `data\` into it), and double-click `Install PDF Generator.bat` again.
+
+**Uninstall:** quit the app, delete the folder and the *PDF Generator* shortcuts (Desktop, Start Menu). If Java was
+installed by the installer, it can be removed from *Settings → Apps* (*Microsoft Build of OpenJDK*).
+
 ## Requirements
-- Java 21 and Maven 3.9 (both on `PATH`); Node is downloaded by the build
+- Java 21 (JDK). The installer finds it, or offers to install it. Maven comes with the project (`mvnw.cmd`, the Maven
+  Wrapper) and Node is downloaded by the build.
 - Windows: Calibri/Arial are used from `C:\Windows\Fonts` when available; otherwise the bundled Carlito font is used.
 
 ## Quick start
 
 **Double-click `Install PDF Generator.bat`.** It builds the app and creates the **PDF Generator** shortcut on the
-Desktop and in this folder (needs Java 21 and Maven). Run it again after changing the code: it rebuilds, closes the
+Desktop and in this folder (see *Install on a new computer* above). Run it again after changing the code: it rebuilds, closes the
 running app (after asking) and installs the new version into `app\`, which is what the shortcut runs.
 
 The same from a terminal, with options:
@@ -87,7 +108,7 @@ If the shortcut does nothing visible, see `logs\pdf-generator.log`.
 Without the `.bat` files:
 
 ```bat
-mvn package
+mvnw package
 java -jar target\pdf-generator.jar serve
 java -jar target\pdf-generator.jar render --all --pdfgen.data-dir=samples
 ```
@@ -110,11 +131,11 @@ java -jar target\pdf-generator.jar render --all --pdfgen.data-dir=samples
 | `pdfgen.preferred-port` | `8080` | viewer port if free, otherwise a free port is chosen (always bound to 127.0.0.1) |
 
 ## Development
-- `mvn verify` builds everything and runs all tests: Java (unit, integration, end-to-end PDF, architecture rules)
+- `mvnw verify` builds everything and runs all tests: Java (unit, integration, end-to-end PDF, architecture rules)
   and the editor's Vitest tests. The first build downloads Node into `frontend\node`.
 - Editor UI: `frontend/` (React + TypeScript + Vite). For UI work run the app, then `cd frontend && npm run dev`
   (hot reload on http://localhost:5173, API proxied to port 8080).
-  Quick Java-only build: `mvn package -Dskip.npm -Dskip.installnodenpm`.
+  Quick Java-only build: `mvnw package -Dskip.npm -Dskip.installnodenpm`.
 - Architecture and conventions: [CLAUDE.md](CLAUDE.md). Plan: [docs/PLAN.md](docs/PLAN.md). Decisions: [docs/adr/](docs/adr/).
 - A theme is `src/main/resources/themes/<type>/<name>/document.html` + `style.css`
   (Thymeleaf + CSS 2.1 / paged media, rendered by OpenHTMLtoPDF). Theme rules:

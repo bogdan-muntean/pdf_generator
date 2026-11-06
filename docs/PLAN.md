@@ -87,10 +87,13 @@ output/                       (git-ignored, generated PDFs)
   `data/cover-letter-en-marsh.yaml`
 - [x] Backup / restore of all data as one ZIP, and a shortcut in the project folder (ADR-0028)
 - [x] Delete any document together with its variants, with a recoverable copy (ADR-0029)
+- [x] Setup on a new computer by double-click: Maven Wrapper, Java found or installed via winget (ADR-0030)
 
 ### Follow-ups (not built, only on real need)
 - Merge import of a backup (add only the missing documents); today a restore replaces everything (ADR-0028).
 - A CV in the modern style (ADR-0027).
+- GitHub Release with a prebuilt jar, so users need no build at all (ADR-0030, deferred).
+- Run the installer once in a clean Windows Sandbox (no Java) to check the winget path (ADR-0030).
 - Duplicate a base document (e.g. to start `cv-de` from `cv-en`).
 - Warn when a rendered letter still contains `[...]` placeholders.
 

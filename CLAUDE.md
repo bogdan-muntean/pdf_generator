@@ -99,6 +99,9 @@ samples/                  fictional CVs, cover letters and a 3-level variant cha
 data/                     owner's real documents + assets (git-ignored, ADR-0010)
 output/                   generated PDFs (git-ignored)
 start.bat / render.bat    launchers (ADR-0012)
+Install PDF Generator.bat double-click installer: runs create-shortcut.ps1 (ADR-0030)
+installer/                JavaSetup.ps1 (find JDK 21+ or install via winget) + its test script (ADR-0030)
+mvnw.cmd, .mvn/wrapper/   Maven Wrapper, pinned and checksum-verified Maven (ADR-0030)
 create-shortcut.ps1       Desktop + project-folder shortcut: javaw + tray, auto port, single instance (ADR-0021, ADR-0028)
 run/, logs/               runtime lock/port file and logs (git-ignored)
 ```

@@ -8,6 +8,10 @@
   browser and shows a tray icon (Open viewer / Quit). Safe to run again: run it after changing the code
   to install the new build.
 
+  On a new computer it needs nothing but Windows and internet: it finds Java 21 (or offers to install it with
+  winget) and builds with the Maven Wrapper (mvnw.cmd), which downloads Maven and Node itself (ADR-0030).
+  The full build output goes to logs\install-<time>.log.
+
   The shortcut runs app\pdf-generator.jar, a COPY of the build. Rebuilding (mvn package) therefore never
   touches the jar of a running app. Replacing a jar under a running JVM breaks it (ADR-0021).
 
@@ -19,7 +23,8 @@
 param(
     [switch] $StartMenu,
     [switch] $SkipBuild,
-    [switch] $NoFolderShortcut
+    [switch] $NoFolderShortcut,
+    [switch] $BuildOnly          # build and check the jar, install nothing (for testing the setup)
 )
 
 $ErrorActionPreference = 'Stop'
@@ -29,6 +34,12 @@ $appDir = Join-Path $root 'app'
 $jar = Join-Path $appDir 'pdf-generator.jar'
 $icon = Join-Path $appDir 'app.ico'
 $instanceFile = Join-Path $root 'run\instance.properties'
+
+. (Join-Path $root 'installer\JavaSetup.ps1')
+$jdk = Get-OrInstallJdk
+$env:JAVA_HOME = $jdk                        # this process only: mvnw.cmd and the checks below use it
+$env:Path = (Join-Path $jdk 'bin') + ';' + $env:Path
+Write-Host "Java: $jdk"
 
 function Get-RunningPort {
     if (-not (Test-Path $instanceFile)) { return $null }
@@ -44,23 +55,44 @@ function Get-RunningPort {
 }
 
 if (-not $SkipBuild) {
-    Write-Host 'Building pdf-generator (mvn package)...'
+    $logDir = Join-Path $root 'logs'
+    New-Item -ItemType Directory -Force $logDir | Out-Null
+    $log = Join-Path $logDir ("install-" + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.log')
+    $maven = Join-Path $root 'mvnw.cmd'
+    if (-not (Test-Path $maven)) { $maven = 'mvn' }   # fallback for an old checkout without the wrapper
+    Write-Host 'Building pdf-generator. The first time this downloads Maven, Node and the libraries'
+    Write-Host '(internet needed, a few minutes)...'
     Push-Location $root
     try {
-        & mvn -q -B package -DskipTests
-        if ($LASTEXITCODE -ne 0) { throw "Maven build failed (exit code $LASTEXITCODE)" }
+        $previous = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'      # Maven writes warnings to stderr; the exit code decides
+        & cmd /c "`"$maven`" -B package -DskipTests > `"$log`" 2>&1"
+        $exitCode = $LASTEXITCODE
+        $ErrorActionPreference = $previous
     } finally {
         Pop-Location
     }
+    if ($exitCode -ne 0) {
+        $text = Get-Content $log -Raw -ErrorAction SilentlyContinue
+        if ($text -match 'UnknownHost|Could not transfer|Could not resolve|Connection (refused|reset|timed out)|Unable to tunnel|No such host|Failed to download|Cannot download') {
+            throw "The build could not download what it needs. Check the internet connection (and any proxy or antivirus), then try again.`nDetails: $log"
+        }
+        throw "The build failed (exit code $exitCode). Details: $log"
+    }
+    Write-Host "Build OK (log: $log)"
 }
 if (-not (Test-Path $built)) { throw "Jar not found: $built" }
 
 # A broken jar fails inside javaw before the app can show any message: check it really starts.
-$java = if ($env:JAVA_HOME -and (Test-Path (Join-Path $env:JAVA_HOME 'bin\java.exe'))) { Join-Path $env:JAVA_HOME 'bin\java.exe' } else { 'java' }
-$versionOutput = & $java -jar $built --version 2>&1 | Out-String
+$java = Join-Path $jdk 'bin\java.exe'
+$previous = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+try { $versionOutput = & $java -jar $built --version 2>&1 | Out-String } finally { $ErrorActionPreference = $previous }
 if ($LASTEXITCODE -ne 0 -or $versionOutput -notmatch 'pdf-generator') {
     throw "The built jar does not start (it may be incomplete). Run 'mvn package' and check its output.`n$versionOutput"
 }
+
+if ($BuildOnly) { Write-Host "Build checked: $built (nothing installed)"; exit 0 }
 
 # The installed copy cannot be replaced while the app runs from it: ask the app to quit cleanly first.
 $port = Get-RunningPort
@@ -81,15 +113,8 @@ try {
 }
 Copy-Item (Join-Path $root 'src\main\resources\launcher\app.ico') $icon -Force
 
-# javaw = Java without a console window. Prefer JAVA_HOME, else whatever is on PATH.
-$javaw = $null
-if ($env:JAVA_HOME -and (Test-Path (Join-Path $env:JAVA_HOME 'bin\javaw.exe'))) {
-    $javaw = Join-Path $env:JAVA_HOME 'bin\javaw.exe'
-} else {
-    $command = Get-Command javaw.exe -ErrorAction SilentlyContinue
-    if ($command) { $javaw = $command.Source }
-}
-if (-not $javaw) { throw 'javaw.exe not found: install Java 21 or set JAVA_HOME' }
+# javaw = Java without a console window, from the JDK found above (full path: works even if Java is not on PATH).
+$javaw = Join-Path $jdk 'bin\javaw.exe'
 
 $targets = @([Environment]::GetFolderPath('Desktop'))
 if ($StartMenu) { $targets += [Environment]::GetFolderPath('Programs') }
