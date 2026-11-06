@@ -39,7 +39,7 @@ $instanceFile = Join-Path $root 'run\instance.properties'
 $jdk = Get-OrInstallJdk
 $env:JAVA_HOME = $jdk                        # this process only: mvnw.cmd and the checks below use it
 $env:Path = (Join-Path $jdk 'bin') + ';' + $env:Path
-Write-Host "Java: $jdk"
+Write-Host ""
 
 function Get-RunningPort {
     if (-not (Test-Path $instanceFile)) { return $null }
@@ -60,8 +60,10 @@ if (-not $SkipBuild) {
     $log = Join-Path $logDir ("install-" + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.log')
     $maven = Join-Path $root 'mvnw.cmd'
     if (-not (Test-Path $maven)) { $maven = 'mvn' }   # fallback for an old checkout without the wrapper
-    Write-Host 'Building pdf-generator. The first time this downloads Maven, Node and the libraries'
-    Write-Host '(internet needed, a few minutes)...'
+    Write-Host ''
+    Write-Host 'Step 2 of 3: building PDF Generator.'
+    Write-Host '  The first time this downloads Maven, Node and the libraries (internet needed, a few minutes).'
+    Write-Host "  Progress is written to $log"
     Push-Location $root
     try {
         $previous = $ErrorActionPreference
@@ -79,7 +81,7 @@ if (-not $SkipBuild) {
         }
         throw "The build failed (exit code $exitCode). Details: $log"
     }
-    Write-Host "Build OK (log: $log)"
+    Write-Host "  Build finished."
 }
 if (-not (Test-Path $built)) { throw "Jar not found: $built" }
 
@@ -105,6 +107,8 @@ if ($port) {
     Start-Sleep -Milliseconds 500
 }
 
+Write-Host ''
+Write-Host 'Step 3 of 3: installing and creating the shortcuts...'
 New-Item -ItemType Directory -Force $appDir | Out-Null
 try {
     Copy-Item $built $jar -Force

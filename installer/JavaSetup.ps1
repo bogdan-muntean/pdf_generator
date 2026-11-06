@@ -60,23 +60,40 @@ function Find-Jdk {
 
 <# Finds a JDK; if there is none, offers to install one with winget. Returns the JDK home or throws. #>
 function Get-OrInstallJdk {
+    Write-Host "Step 1 of 3: checking for Java $MinimumJavaVersion (JDK)..."
     $jdk = Find-Jdk
-    if ($jdk) { return $jdk }
+    if ($jdk) {
+        Write-Host "  Java $MinimumJavaVersion or newer is already installed: $jdk"
+        return $jdk
+    }
 
-    Write-Host ''
-    Write-Host "Java $MinimumJavaVersion (JDK) is needed and was not found on this computer."
     $download = 'https://adoptium.net/temurin/releases/?version=21&os=windows&package=jdk'
+    Write-Host ''
+    Write-Host "  Java $MinimumJavaVersion (JDK) is needed to build and run PDF Generator, and was not found."
     if (-not (Get-Command winget.exe -ErrorAction SilentlyContinue)) {
         throw "Install Java 21 (JDK, .msi) from $download , then double-click the installer again."
     }
-    $answer = Read-Host 'Install Java 21 now (Microsoft Build of OpenJDK, via winget)? [y/N]'
+    Write-Host '  It can be installed now with Windows Package Manager (winget):'
+    Write-Host '    - what: Microsoft Build of OpenJDK 21, a free Java from Microsoft (about 300 MB installed)'
+    Write-Host '    - needs: internet; Windows may ask "Do you want to allow this app to make changes?": choose Yes'
+    Write-Host '    - takes: usually 1-3 minutes; it stays on this computer and other programs can use it'
+    Write-Host '    - remove later: Settings > Apps > "Microsoft Build of OpenJDK"'
+    $answer = Read-Host '  Install Java 21 now? [y/N]'
     if ($answer -notmatch '^[yY]') {
         throw "Java is required. Install Java 21 (JDK) from $download , then run the installer again."
     }
+
+    Write-Host ''
+    Write-Host '  Installing Java 21... (downloading and installing, please wait; do not close this window)'
     & winget install --id Microsoft.OpenJDK.21 -e --accept-package-agreements --accept-source-agreements
+    $wingetExit = $LASTEXITCODE
+    Write-Host ''
     $jdk = Find-Jdk   # the new JDK is not on this window's PATH yet: found in the standard folders
     if (-not $jdk) {
-        throw "Java could not be installed automatically. Install Java 21 (JDK) from $download , then run the installer again."
+        $reason = if ($wingetExit -ne 0) { " (winget exit code $wingetExit; a declined permission prompt or no internet are the usual causes)" } else { '' }
+        throw "Java could not be installed automatically$reason. Install Java 21 (JDK) from $download , then run the installer again."
     }
+    Write-Host "  Java 21 installed: $jdk"
+    Write-Host '  Other open windows will not see it until they are reopened; this installer and the PDF Generator shortcut do not need that.'
     return $jdk
 }
