@@ -11,8 +11,11 @@ It runs only on your machine and makes no network calls.
 
 ## Quick start
 
-Create the desktop shortcut once. Rerun it after changing the code: it rebuilds, closes the running app
-(after asking) and installs the new version into `app\`, which is what the shortcut runs.
+**Double-click `Install PDF Generator.bat`.** It builds the app and creates the **PDF Generator** shortcut on the
+Desktop and in this folder (needs Java 21 and Maven). Run it again after changing the code: it rebuilds, closes the
+running app (after asking) and installs the new version into `app\`, which is what the shortcut runs.
+
+The same from a terminal, with options:
 
 ```bat
 powershell -ExecutionPolicy Bypass -File create-shortcut.ps1            :: Desktop + this folder
